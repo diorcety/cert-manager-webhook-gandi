@@ -5,12 +5,9 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: {{ include "cert-manager-webhook-gandi.selfSignedIssuer" . }}
-  namespace: {{ .Values.certManager.namespace | quote }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ include "cert-manager-webhook-gandi.name" . }}
-    chart: {{ include "cert-manager-webhook-gandi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "cert-manager-webhook-gandi.labels" . | nindent 4 }}
 spec:
   selfSigned: {}
 ---
@@ -19,12 +16,9 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ include "cert-manager-webhook-gandi.rootCACertificate" . }}
-  namespace: {{ .Values.certManager.namespace | quote }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ include "cert-manager-webhook-gandi.name" . }}
-    chart: {{ include "cert-manager-webhook-gandi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "cert-manager-webhook-gandi.labels" . | nindent 4 }}
 spec:
   secretName: {{ include "cert-manager-webhook-gandi.rootCACertificate" . }}
   duration: 43800h # 5y
@@ -38,12 +32,9 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: {{ include "cert-manager-webhook-gandi.rootCAIssuer" . }}
-  namespace: {{ .Values.certManager.namespace | quote }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ include "cert-manager-webhook-gandi.name" . }}
-    chart: {{ include "cert-manager-webhook-gandi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "cert-manager-webhook-gandi.labels" . | nindent 4 }}
 spec:
   ca:
     secretName: {{ include "cert-manager-webhook-gandi.rootCACertificate" . }}
@@ -53,12 +44,9 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ include "cert-manager-webhook-gandi.servingCertificate" . }}
-  namespace: {{ .Values.certManager.namespace | quote }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ include "cert-manager-webhook-gandi.name" . }}
-    chart: {{ include "cert-manager-webhook-gandi.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "cert-manager-webhook-gandi.labels" . | nindent 4 }}
 spec:
   secretName: {{ include "cert-manager-webhook-gandi.servingCertificate" . }}
   duration: 8760h # 1y
@@ -66,5 +54,5 @@ spec:
     name: {{ include "cert-manager-webhook-gandi.rootCAIssuer" . }}
   dnsNames:
   - {{ include "cert-manager-webhook-gandi.fullname" . }}
-  - {{ include "cert-manager-webhook-gandi.fullname" . }}.{{ .Values.certManager.namespace }}
-  - {{ include "cert-manager-webhook-gandi.fullname" . }}.{{ .Values.certManager.namespace }}.svc
+  - {{ include "cert-manager-webhook-gandi.fullname" . }}.{{ .Release.Namespace }}
+  - {{ include "cert-manager-webhook-gandi.fullname" . }}.{{ .Release.Namespace }}.svc
